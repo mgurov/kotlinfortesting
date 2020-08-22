@@ -24,6 +24,10 @@ public class PurchaseOrder {
         return quantity;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     public String getBuyer() {
         return buyer;
     }
