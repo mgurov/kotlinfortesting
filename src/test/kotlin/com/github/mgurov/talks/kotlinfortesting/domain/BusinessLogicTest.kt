@@ -2,6 +2,7 @@ package com.github.mgurov.talks.kotlinfortesting.domain
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 
 class BusinessLogicKotlinTest {
     @Test
@@ -20,9 +21,10 @@ class BusinessLogicKotlinTest {
     fun aPurchaseOrder(
             productCode: String = "a product",
             quantity: Int = 1,
+            price: BigDecimal = BigDecimal.TEN,
             buyer: String = "anonymous"
     ) = PurchaseOrder(
-                productCode, quantity, buyer
+                productCode, quantity, price, buyer
         )
 
 }
