@@ -66,7 +66,9 @@ class SomeJsonCommunicationTest {
         }
         """.trimIndent()
 
-        assertThat(mapper.readTree(whenJsonProduced)).isEqualTo(mapper.readTree(expectedJson))
+        val actual = mapper.readTree(whenJsonProduced)
+
+        assertThat(actual).isEqualTo(mapper.readTree(expectedJson))
     }
 
 

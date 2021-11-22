@@ -12,12 +12,12 @@ object PolicyAlertsLogic {
             return false
         }
 
-        val alertingPolicy = policy.payments.find { payment ->
+        val alertingPolicyPayment = policy.payments.find { payment ->
             payment.direction == PaymentDirection.OUTGOING
                     && payment.status == PolicyPaymentStatus.PENDING
                     && payment.due.isBefore(now)
         }
 
-        return null != alertingPolicy
+        return null != alertingPolicyPayment
     }
 }

@@ -1,6 +1,7 @@
 package com.iptiq.mgurov.kotlinfortesting.payment
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.util.*
@@ -87,6 +88,15 @@ class TotalAmountBusinessLogicTest {
 
     private fun paymentWithAmount(amount: BigDecimal): Payment = PaymentTestObjectBuilder.newPayment().withAmount(amount).build()
 
+
+
+
+
+
+
+
+
+
     @Test
     fun `should take direction into account`() {
         val actual = businessLogic.totalAmount(
@@ -170,10 +180,13 @@ class TotalAmountBusinessLogicTest {
             Currency.getInstance("UAH") to BigDecimal("-12.34"),
         ))
 
-        assertThat(actual.map { (currency, amount) -> currency.currencyCode to amount.toString() }).containsExactlyInAnyOrder(
-            "EUR" to "1.00",
-            "UAH" to "-12.34",
-        )
+        assertThat(actual.map { (currency, amount) ->
+            currency.currencyCode to amount.toString()
+        })
+            .containsExactlyInAnyOrder(
+                "EUR" to "1.00",
+                "UAH" to "-12.34",
+            )
     }
 
     private fun PaymentsBusinessLogic.sumAmountByCurrency(vararg payments: Payment) = this.sumAmountByCurrency(payments.toList())
@@ -181,6 +194,37 @@ class TotalAmountBusinessLogicTest {
 
 
 
+
+
+
+
+
+
+
+    @Test
+    fun `extracting style`() {
+
+        val actual = listOf(
+            aPayment(currency = "EUR", amount = "1.00", direction = PaymentDirection.INCOMING),
+            aPayment(currency = "UAH", amount = "12.34", direction = PaymentDirection.OUTGOING),
+        )
+
+        assertThat(actual.map { payment ->
+            payment.currency.currencyCode to payment.amount.toString()
+        })
+            .containsExactlyInAnyOrder(
+                "EUR" to "1.00",
+                "UAH" to "12.34",
+            )
+
+        assertThat(actual)
+            //.extracting("currency", "amount")
+            .extracting({ payment -> payment.currency.currencyCode }, { payment -> payment.amount.toString() })
+            .containsExactlyInAnyOrder(
+                tuple("EUR" , "1.00"),
+                tuple("UAH" , "12.34"),
+            )
+    }
 
 
 }
