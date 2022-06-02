@@ -166,7 +166,6 @@ class TotalAmountBusinessLogicTest {
 
 
 
-
     @Test
     fun `should group by valuta`() {
 
@@ -225,6 +224,56 @@ class TotalAmountBusinessLogicTest {
                 tuple("UAH" , "12.34"),
             )
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
+    fun `should take direction into account - copy template`() {
+
+        val actual = businessLogic.totalAmount(
+            aPaymentTemplate().copy(amount = "1.00".toBigDecimal(), direction = PaymentDirection.INCOMING),
+            aPaymentTemplate().copy(amount = "12.34".toBigDecimal(), direction = PaymentDirection.OUTGOING),
+        )
+
+        assertThat(actual).isEqualTo(BigDecimal("-11.34"))
+    }
+
+    private fun aPaymentTemplate(): Payment = PaymentTestObjectBuilder.newPayment()
+        .withAmount(BigDecimal.ONE)
+        .withCurrency("EUR")
+        .withDirection(PaymentDirection.INCOMING)
+        .build()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
