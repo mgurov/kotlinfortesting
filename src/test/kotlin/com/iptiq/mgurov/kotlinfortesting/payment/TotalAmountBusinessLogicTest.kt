@@ -249,29 +249,36 @@ class TotalAmountBusinessLogicTest {
 
 
 
-    @Test
+    @Test //04
     fun `should group by valuta`() {
+
+        val productionActual = businessLogic.sumAmountByCurrency(listOf(
+            aPayment(currency = "EUR", amount = "1.00", direction = PaymentDirection.INCOMING),
+            aPayment(currency = "UAH", amount = "12.34", direction = PaymentDirection.OUTGOING),
+        ))
+
+        productionActual shouldBe mapOf(
+            Currency.getInstance("EUR") to BigDecimal("1.00"),
+            Currency.getInstance("UAH") to BigDecimal("-12.34"),
+        )
+
+        // ----------------------------------------- OR ---------------------------------------
 
         val actual = businessLogic.sumAmountByCurrency(
             aPayment(currency = "EUR", amount = "1.00", direction = PaymentDirection.INCOMING),
             aPayment(currency = "UAH", amount = "12.34", direction = PaymentDirection.OUTGOING),
         )
 
-        assertThat(actual).isEqualTo(mapOf(
-            Currency.getInstance("EUR") to BigDecimal("1.00"),
-            Currency.getInstance("UAH") to BigDecimal("-12.34"),
-        ))
+        //TODO: order
+        actual shouldBe mapOf(
+            "EUR" to "1.00",
+            "UAH" to "-12.34",
+        )
 
-        assertThat(actual.map { (currency, amount) ->
-            currency.currencyCode to amount.toString()
-        })
-            .containsExactlyInAnyOrder(
-                "EUR" to "1.00",
-                "UAH" to "-12.34",
-            )
     }
 
     private fun PaymentsBusinessLogic.sumAmountByCurrency(vararg payments: Payment) = this.sumAmountByCurrency(payments.toList())
+        .map { (currency, sum) -> currency.currencyCode to sum.toString() }.toMap()
 
 
 
