@@ -54,6 +54,13 @@
 			<artifactId>kotlin-test-junit5</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>io.kotest</groupId>
+			<artifactId>kotest-assertions-core-jvm</artifactId>
+			<version>6.0.0.M2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

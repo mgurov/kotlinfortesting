@@ -1,5 +1,6 @@
 package com.iptiq.mgurov.kotlinfortesting.payment
 
+import io.kotest.matchers.shouldBe
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
@@ -11,7 +12,7 @@ class TotalAmountBusinessLogicTest {
     private val businessLogic = PaymentsBusinessLogic()
 
 
-    @Test
+    @Test // 00
     fun `should sum payments up`() {
         val actual = businessLogic.totalAmount(listOfPayments)
 
@@ -91,7 +92,7 @@ class TotalAmountBusinessLogicTest {
 
 
 
-    @Test
+    @Test // 01
     fun `should sum payments up - local dependencies`() {
         val actual = businessLogic.totalAmount(
             listOf(
@@ -112,7 +113,7 @@ class TotalAmountBusinessLogicTest {
             )
         )
 
-        assertThat(actual).isEqualTo(BigDecimal("13.34"))
+        actual shouldBe BigDecimal("13.34")
     }
 
 
@@ -216,15 +217,16 @@ class TotalAmountBusinessLogicTest {
 
 
 
-    @Test
+    @Test //03
     fun `should take direction into account - functions with defaults`() {
 
+        // NB:
         val actual = businessLogic.totalAmount(
             aPayment(amount = "1.00", direction = PaymentDirection.INCOMING),
             aPayment(amount = "12.34", direction = PaymentDirection.OUTGOING),
         )
 
-        assertThat(actual).isEqualTo(BigDecimal("-11.34"))
+        actual shouldBe BigDecimal("-11.34")
     }
 
     private fun aPayment(
