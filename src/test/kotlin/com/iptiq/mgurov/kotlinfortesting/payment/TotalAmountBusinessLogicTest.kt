@@ -8,10 +8,91 @@ import java.util.*
 
 class TotalAmountBusinessLogicTest {
 
-    val businessLogic = PaymentsBusinessLogic()
+    private val businessLogic = PaymentsBusinessLogic()
+
 
     @Test
     fun `should sum payments up`() {
+        val actual = businessLogic.totalAmount(listOfPayments)
+
+        assertThat(actual).isEqualTo(BigDecimal("13.34"))
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private val listOfPayments = listOf(
+        Payment(
+            userId = "whoever",
+            policyId = null,
+            amount = BigDecimal.ONE,
+            currency = Currency.getInstance("EUR"),
+            direction = PaymentDirection.INCOMING,
+        ),
+        Payment(
+            userId = "whoever",
+            policyId = null,
+            amount = BigDecimal("12.34"),
+            currency = Currency.getInstance("EUR"),
+            direction = PaymentDirection.INCOMING,
+        ),
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
+    fun `should sum payments up - local dependencies`() {
         val actual = businessLogic.totalAmount(
             listOf(
                 Payment(
