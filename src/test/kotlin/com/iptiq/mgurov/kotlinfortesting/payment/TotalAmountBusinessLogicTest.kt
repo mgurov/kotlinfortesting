@@ -254,11 +254,12 @@ class TotalAmountBusinessLogicTest {
 
         val productionActual = businessLogic.sumAmountByCurrency(listOf(
             aPayment(currency = "EUR", amount = "1.00", direction = PaymentDirection.INCOMING),
+            aPayment(currency = "EUR", amount = "2.00", direction = PaymentDirection.INCOMING),
             aPayment(currency = "UAH", amount = "12.34", direction = PaymentDirection.OUTGOING),
         ))
 
         productionActual shouldBe mapOf(
-            Currency.getInstance("EUR") to BigDecimal("1.00"),
+            Currency.getInstance("EUR") to BigDecimal("3.00"),
             Currency.getInstance("UAH") to BigDecimal("-12.34"),
         )
 
@@ -266,12 +267,12 @@ class TotalAmountBusinessLogicTest {
 
         val actual = businessLogic.sumAmountByCurrency(
             aPayment(currency = "EUR", amount = "1.00", direction = PaymentDirection.INCOMING),
+            aPayment(currency = "EUR", amount = "2.00", direction = PaymentDirection.INCOMING),
             aPayment(currency = "UAH", amount = "12.34", direction = PaymentDirection.OUTGOING),
         )
 
-        //TODO: order
         actual shouldBe mapOf(
-            "EUR" to "1.00",
+            "EUR" to "3.00",
             "UAH" to "-12.34",
         )
 
