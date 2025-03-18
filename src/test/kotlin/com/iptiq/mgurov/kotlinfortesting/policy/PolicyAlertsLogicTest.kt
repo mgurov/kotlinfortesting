@@ -11,7 +11,7 @@ internal class PolicyAlertsLogicTest {
 
 
 
-    @Test
+    @Test //01
     fun `should alert on outstanding payment due`() {
 
         val givenPolicy = Policy(
@@ -35,28 +35,38 @@ internal class PolicyAlertsLogicTest {
         assertThat(actual).isTrue()
     }
 
-
-
-
-
-
     @Test
-    fun `should alert on outstanding payment due - builder edition`() {
+    fun `should alert on outstanding payment due - DSL aka Type-Safe Builders edition`() {
 
-        val givenPolicy = PolicyTestBuilder.aPolicy()
-            .withActivated(Instant.now().minusSeconds(10))
-            .addPayments(
-                PolicyPaymentTestBuilder.aPayment()
-                    .withDirection(PaymentDirection.OUTGOING)
-                    .withStatus(PolicyPaymentStatus.PENDING)
-                    .withDue(Instant.now().minus(1, ChronoUnit.DAYS))
-            )
-            .build()
+        val givenPolicy = aPolicy {
+            activated = Instant.now().minusSeconds(10) //TODO: shortcuts?
+
+            payment {
+                direction = PaymentDirection.OUTGOING
+                status = PolicyPaymentStatus.PENDING
+                due = Instant.now().minus(1, ChronoUnit.DAYS)
+            }
+        }
 
         val actual = PolicyAlertsLogic.shouldAlertOnDuePayout(givenPolicy)
 
         assertThat(actual).isTrue()
     }
+
+
+    fun aPolicy(adjust: PolicyTestBuilder.()->Unit): Policy {
+        val builder = PolicyTestBuilder()
+        builder.adjust()
+        return builder.build()
+    }
+
+    private fun PolicyTestBuilder.payment(adjust: PolicyPaymentTestBuilder.() -> Unit) {
+        val paymentBuilder = PolicyPaymentTestBuilder()
+        paymentBuilder.adjust()
+        this.payments += paymentBuilder.build()
+    }
+
+
 
 
     class PolicyTestBuilder {
@@ -74,11 +84,6 @@ internal class PolicyAlertsLogicTest {
                 expiration,
                 payments
             )
-        }
-
-        fun withActivated(activated: Instant): PolicyTestBuilder {
-            this.activated = activated
-            return this
         }
 
         fun addPayments(vararg policyPayments: PolicyPaymentTestBuilder): PolicyTestBuilder {
@@ -125,42 +130,6 @@ internal class PolicyAlertsLogicTest {
         companion object {
             fun aPayment() = PolicyPaymentTestBuilder()
         }
-    }
-
-
-
-
-
-
-
-    @Test
-    fun `should alert on outstanding payment due - DSL aka Type-Safe Builders edition`() {
-
-        val givenPolicy = aPolicy {
-            activated = Instant.now().minusSeconds(10)
-
-            payment {
-                direction = PaymentDirection.OUTGOING
-                status = PolicyPaymentStatus.PENDING
-                due = Instant.now().minus(1, ChronoUnit.DAYS)
-            }
-        }
-
-        val actual = PolicyAlertsLogic.shouldAlertOnDuePayout(givenPolicy)
-
-        assertThat(actual).isTrue()
-    }
-
-    fun aPolicy(adjust: PolicyTestBuilder.()->Unit): Policy {
-        val builder = PolicyTestBuilder()
-        builder.adjust()
-        return builder.build()
-    }
-
-    private fun PolicyTestBuilder.payment(adjust: PolicyPaymentTestBuilder.() -> Unit) {
-        val paymentBuilder = PolicyPaymentTestBuilder()
-        paymentBuilder.adjust()
-        this.payments += paymentBuilder.build()
     }
 
 
